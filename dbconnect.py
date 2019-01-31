@@ -25,6 +25,7 @@ def get_connection():
                                      database=db)
     return cnx
 
+
 def query_execute(operation):
     try:
         cnx = get_connection()
@@ -36,7 +37,7 @@ def query_execute(operation):
         cnx.close()
         return d
     except Exception as e:
-        logging.log(e)
+        logging.error(e)
 
 
 def insert_execute(operation):
@@ -47,9 +48,10 @@ def insert_execute(operation):
         cnx.commit()
         cursor.close()
         cnx.close()
-        print "ok"
+        print 'ok'
     except Exception as e:
-        logging.log(e)
+        print e
+        logging.error(e)
 
 
 def get_all_musicinfo():
@@ -57,6 +59,12 @@ def get_all_musicinfo():
     res = query_execute(operation=opetation)
     print res
     return res
+
+
+def close_cur_cnx(cursor, cnx):
+    cursor.close()
+    cnx.close()
+
 
 if __name__ == "__main__":
     get_all_musicinfo()
