@@ -1,6 +1,9 @@
 import logging
 import os
 from mysql.connector import (connection)
+import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
 
 socket = "/tmp/mysql.sock"
 host = "127.0.0.1"

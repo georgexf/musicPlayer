@@ -59,8 +59,8 @@ def insert_info_into_db(tableName, musicinfo_list):
 
 
 def get_music_info_by_pageid(pagesize, pageid):
-    start_position = pagesize * (pageid - 1)
-    end_position = pagesize * pageid
+    start_position = int(pagesize) * (int(pageid) - 1)
+    end_position = int(pagesize) * int(pageid)
     operation = 'select * from musicinfo limit {0},{1}'.format(start_position, end_position)
     music_info_list = dbconnect.query_execute(operation)
     print music_info_list
