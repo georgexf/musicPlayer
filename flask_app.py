@@ -1,5 +1,5 @@
 #_*_coding : utf-8 _*_
-from flask import Flask
+from flask import Flask, jsonify
 from flask import send_file, send_from_directory
 import os
 from flask import make_response
@@ -15,7 +15,7 @@ app = Flask(__name__)
 
 LOG_FORMAT = "%(asctime)s - %(levelname)s - %(message)s"
 DATE_FORMAT = "%m/%d/%Y %H:%M:%S %p"
-logfile = os.path.join(os.path.abspath(os.path.dirname(os.getcwd())), 'log/flask-{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d")))
+logfile = os.path.join(os.path.abspath(os.path.dirname(os.getcwd())), '/log/flask-{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d")))
 logging.basicConfig(filename=logfile, level=logging.DEBUG, format=LOG_FORMAT, datefmt=DATE_FORMAT)
 
 
@@ -26,17 +26,17 @@ def hello_world():
 
 @app.route('/api/music/info/<pageid>')
 def get_music_info(pageid):
-    return musicinfo.get_music_info_by_pageid(pagesize=20, pageid=pageid)
+    return jsonify(musicinfo.get_music_info_by_pageid(pagesize=20, pageid=pageid))
 
 
 @app.route('/api/music/info/singer/<singer>')
 def get_music_info_by_singer(singer):
-    return musicinfo.get_music_info_by_singer(singer=singer)
+    return jsonify(musicinfo.get_music_info_by_singer(singer=singer))
 
 
 @app.route('/api/music/info/songname/<songname>')
 def get_music_info_by_songname(songname):
-    return musicinfo.get_music_info_by_songName(songname=songname)
+    return jsonify(musicinfo.get_music_info_by_songName(songname=songname))
 
 
 @app.route("/api/music/download/<fileName>", methods=['GET'])
