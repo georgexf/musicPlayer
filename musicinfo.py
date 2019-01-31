@@ -8,7 +8,7 @@ reload(sys)
 sys.setdefaultencoding('utf8')
 
 
-host = "http://39.108.230.41"
+host = "39.108.230.41"
 LOG_FORMAT = "%(asctime)s - %(levelname)s - %(message)s"
 DATE_FORMAT = "%m/%d/%Y %H:%M:%S %p"
 filename = os.path.join(os.path.abspath(os.path.dirname(os.getcwd())) , 'log/mysql.log')
@@ -33,7 +33,7 @@ def sync_music_in_db():
             "songName": songName,
             "singerName":singerName,
             "album": album,
-            "downloadUrl": downloadUrl,
+            "downloadUrl": downloadUrl
         }
         musicinfo_list.append(musicinfo)
     insert_info_into_db("musicinfo", musicinfo_list)
@@ -44,7 +44,10 @@ def insert_info_into_db(tableName, musicinfo_list):
         keys = ",".join(musicinfo.keys())
         values = ""
         for key in musicinfo.keys():
-            values = values + str(musicinfo[key]).encode("unicode_escape") + ','
+            if isinstance(musicinfo[key], int):
+                values = '{0}{1},'.format(values, musicinfo[key])
+            elif isinstance(musicinfo[key], str):
+                values = '{0}\"{1}\",'.format(values, str(musicinfo[key]).encode("unicode_escape"))
         values = '({0})'.format(values.strip(','))
         #print values.decode("unicode_escape")
         values_list.append(values)
