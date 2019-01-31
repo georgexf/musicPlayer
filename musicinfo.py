@@ -33,7 +33,7 @@ def sync_music_in_db():
             "songName": songName,
             "singerName":singerName,
             "album": album,
-            "downloadUrl": downloadUrl
+            "downUrl": downloadUrl
         }
         musicinfo_list.append(musicinfo)
     insert_info_into_db("musicinfo", musicinfo_list)
