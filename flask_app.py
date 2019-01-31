@@ -1,5 +1,5 @@
-#_*_coding : utf-8 _*_
-from flask import Flask, jsonify
+#coding=utf-8
+from flask import Flask, jsonify,abort
 from flask import send_file, send_from_directory
 import os
 from flask import make_response
@@ -8,7 +8,7 @@ import logging
 import datetime
 import sys
 reload(sys)
-sys.setdefaultencoding('utf8')
+sys.setdefaultencoding('utf-8')
 
 app = Flask(__name__)
 
@@ -31,11 +31,17 @@ def get_music_info(pageid):
 
 @app.route('/api/music/info/singer/<singer>')
 def get_music_info_by_singer(singer):
+    logging.info("get singer {0} music".format(singer))
+    if len(musicinfo.get_music_info_by_singer(singer=singer)) == 0:
+        abort(404)
     return jsonify(musicinfo.get_music_info_by_singer(singer=singer))
 
 
 @app.route('/api/music/info/songname/<songname>')
 def get_music_info_by_songname(songname):
+    logging.info("get sing {0} music".format(songname))
+    if len(musicinfo.get_music_info_by_songName(songname=songname)) == 0:
+        abort(404)
     return jsonify(musicinfo.get_music_info_by_songName(songname=songname))
 
 

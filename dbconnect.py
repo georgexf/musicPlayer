@@ -1,9 +1,10 @@
+#coding=utf-8
 import logging
 import os
 from mysql.connector import (connection)
 import sys
 reload(sys)
-sys.setdefaultencoding('utf8')
+sys.setdefaultencoding('utf-8')
 
 socket = "/tmp/mysql.sock"
 host = "127.0.0.1"
@@ -23,9 +24,7 @@ def get_connection():
     global user
     global password
     global db
-    cnx = connection.MySQLConnection(user=user, password=password,
-                                     host=host,
-                                     database=db)
+    cnx = connection.MySQLConnection(user=user, password=password, host=host, database=db, charset='utf8')
     return cnx
 
 

@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+#coding=utf-8
 import eyed3
 import os
 import dbconnect
@@ -6,7 +6,7 @@ import logging
 import datetime
 import sys
 reload(sys)
-sys.setdefaultencoding('utf8')
+sys.setdefaultencoding('utf-8')
 
 
 host = "39.108.230.41"
