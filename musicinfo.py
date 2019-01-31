@@ -62,7 +62,8 @@ def get_music_info_by_pageid(pagesize, pageid):
     start_position = int(pagesize) * (int(pageid) - 1)
     end_position = int(pagesize) * int(pageid)
     operation = 'select * from musicinfo limit {0},{1}'.format(start_position, end_position)
-    music_info_list = dbconnect.query_execute(operation)
+    res = dbconnect.query_execute(operation)
+    music_info_list = parse_res(res)
     print music_info_list
     return {"musicInfoList": music_info_list}
 
@@ -70,7 +71,8 @@ def get_music_info_by_pageid(pagesize, pageid):
 def get_music_info_by_singer(singer):
     operation = 'select * from musicinfo where singerName= \"{0}\"'.format(singer)
     logging.info(operation)
-    music_info_list = dbconnect.query_execute(operation)
+    res = dbconnect.query_execute(operation)
+    music_info_list = parse_res(res)
     print music_info_list
     return {"musicInfoList": music_info_list}
 
@@ -78,9 +80,26 @@ def get_music_info_by_singer(singer):
 def get_music_info_by_songName(songname):
     operation = 'select * from musicinfo where songName like \"%{0}%\"'.format(songname)
     logging.info(operation)
-    music_info_list = dbconnect.query_execute(operation)
+    res = dbconnect.query_execute(operation)
+    music_info_list = parse_res(res)
     print music_info_list
     return {"musicInfoList": music_info_list}
+
+
+def parse_res(res):
+    music_info_list = []
+    if len(res) > 0:
+        for info in res:
+            musicinfo = {
+                "songId": info[0],
+                "seconds": info[2],
+                "songName": info[3].decode("unicode_escape"),
+                "singerName": info[4].decode("unicode_escape"),
+                "album": info[5].decode("unicode_escape"),
+                "downUrl": info[10].decode("unicode_escape")
+            }
+            music_info_list.append(musicinfo)
+    return music_info_list
 
 
 if __name__ == "__main__":
