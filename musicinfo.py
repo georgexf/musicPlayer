@@ -38,6 +38,7 @@ def sync_music_in_db():
         musicinfo_list.append(musicinfo)
     insert_info_into_db("musicinfo", musicinfo_list)
 
+
 def insert_info_into_db(tableName, musicinfo_list):
     values_list = []
     for musicinfo in musicinfo_list:
@@ -50,9 +51,8 @@ def insert_info_into_db(tableName, musicinfo_list):
                 values = '{0}\"{1}\",'.format(values, str(musicinfo[key]).encode("unicode_escape"))
 
         values = '({0})'.format(values.strip(','))
-        #print values.decode("unicode_escape")
         values_list.append(values)
-    operation = "insert into {0}({1}) values{2}".format(tableName, keys, ",".join(values_list))
+    operation = "replace into {0}({1}) values{2}".format(tableName, keys, ",".join(values_list))
     print operation.decode("unicode_escape")
     dbconnect.insert_execute(operation)
 
