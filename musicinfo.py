@@ -31,7 +31,7 @@ def sync_music_in_db():
             "singerId": 0,
             "seconds": seconds,
             "songName": songName,
-            "singerName":singerName,
+            "singerName": singerName,
             "album": album,
             "downUrl": downloadUrl
         }
@@ -46,8 +46,9 @@ def insert_info_into_db(tableName, musicinfo_list):
         for key in musicinfo.keys():
             if isinstance(musicinfo[key], int):
                 values = '{0}{1},'.format(values, musicinfo[key])
-            elif isinstance(musicinfo[key], str):
+            else:
                 values = '{0}\"{1}\",'.format(values, str(musicinfo[key]).encode("unicode_escape"))
+
         values = '({0})'.format(values.strip(','))
         #print values.decode("unicode_escape")
         values_list.append(values)
