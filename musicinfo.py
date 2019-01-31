@@ -3,7 +3,7 @@ import eyed3
 import os
 import dbconnect
 import logging
-import json
+import datetime
 import sys
 reload(sys)
 sys.setdefaultencoding('utf8')
@@ -12,8 +12,8 @@ sys.setdefaultencoding('utf8')
 host = "39.108.230.41"
 LOG_FORMAT = "%(asctime)s - %(levelname)s - %(message)s"
 DATE_FORMAT = "%m/%d/%Y %H:%M:%S %p"
-filename = os.path.join(os.path.abspath(os.path.dirname(os.getcwd())) , 'log/mysql.log')
-logging.basicConfig(filename='mysql.log', level=logging.DEBUG, format=LOG_FORMAT, datefmt=DATE_FORMAT)
+filename = os.path.join(os.path.abspath(os.path.dirname(os.getcwd())), 'log/mysql-{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d")))
+logging.basicConfig(filename=filename, level=logging.DEBUG, format=LOG_FORMAT, datefmt=DATE_FORMAT)
 
 
 def sync_music_in_db():
@@ -58,7 +58,30 @@ def insert_info_into_db(tableName, musicinfo_list):
     dbconnect.insert_execute(operation)
 
 
+def get_music_info_by_pageid(pagesize, pageid):
+    start_position = pagesize * (pageid - 1)
+    end_position = pagesize * pageid
+    operation = 'select * from musicinfo limit {0},{1}'.format(start_position, end_position)
+    music_info_list = dbconnect.query_execute(operation)
+    print music_info_list
+    return {"musicInfoList": music_info_list}
+
+
+def get_music_info_by_singer(singer):
+    operation = 'select * from musicinfo where singerName= \"{0}\"'.format(singer)
+    logging.info(operation)
+    music_info_list = dbconnect.query_execute(operation)
+    print music_info_list
+    return {"musicInfoList": music_info_list}
+
+
+def get_music_info_by_songName(songname):
+    operation = 'select * from musicinfo where songName like \"%{0}%\"'.format(songname)
+    logging.info(operation)
+    music_info_list = dbconnect.query_execute(operation)
+    print music_info_list
+    return {"musicInfoList": music_info_list}
+
+
 if __name__ == "__main__":
-    #operation = " insert into test(name,age) values('gergelin',9) "
-    #insert_info_into_db(operation)
     sync_music_in_db()
