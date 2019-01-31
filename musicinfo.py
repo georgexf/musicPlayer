@@ -3,6 +3,7 @@ import eyed3
 import os
 import dbconnect
 import logging
+import json
 import sys
 reload(sys)
 sys.setdefaultencoding('utf8')
@@ -21,12 +22,12 @@ def sync_music_in_db():
     for song in os.listdir(musicDir):
         musicPath = os.path.join(musicDir, song)
         audiofile = eyed3.load(musicPath)
-        seconds = int(audiofile.info.time_secs)  #时长
+        seconds = int(audiofile.info.time_secs)  # 时长
         #size = audiofile.info.size_bytes
-        songName = audiofile.tag.title   #歌名
-        singerName = audiofile.tag.artist  #歌手
-        album = audiofile.tag.album   #专辑
-        downloadUrl = "http://{0}/download/{1}".format(host, song)   #下载地址
+        songName = audiofile.tag.title   # 歌名
+        singerName = audiofile.tag.artist  # 歌手
+        album = audiofile.tag.album   # 专辑
+        downloadUrl = "http://{0}/download/{1}".format(host, song)   # 下载地址
         musicinfo = {
             "singerId": 0,
             "seconds": seconds,
@@ -52,8 +53,8 @@ def insert_info_into_db(tableName, musicinfo_list):
 
         values = '({0})'.format(values.strip(','))
         values_list.append(values)
-    operation = "replace into {0}({1}) values{2}".format(tableName, keys, ",".join(values_list))
-    print operation.decode("unicode_escape")
+    operation = "replace into {0}({1}) values{2}".format(tableName, keys, ",".join(values_list)).decode("unicode_escape")
+    print operation
     dbconnect.insert_execute(operation)
 
 
