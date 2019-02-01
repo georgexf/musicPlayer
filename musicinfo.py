@@ -64,8 +64,17 @@ def get_music_info_by_pageid(pagesize, pageid):
     operation = 'select * from musicinfo limit {0},{1}'.format(start_position, end_position)
     res = dbconnect.query_execute(operation)
     music_info_list = parse_res(res)
-    print music_info_list
-    return {"musicInfoList": music_info_list}
+    print
+    if len(music_info_list) == 0:
+        return {
+            "msgStr": music_info_list,
+            "msgCode": 404
+        }
+    else:
+        return {
+            "msgStr": music_info_list,
+            "msgCode": 200
+        }
 
 
 def get_music_info_by_singer(singer):
