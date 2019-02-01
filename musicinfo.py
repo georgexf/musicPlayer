@@ -6,7 +6,6 @@ import logging
 import datetime
 import sys
 reload(sys)
-reload(logging)
 sys.setdefaultencoding('utf-8')
 
 

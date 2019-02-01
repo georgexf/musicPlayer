@@ -17,6 +17,7 @@ LOG_FORMAT = "%(asctime)s - %(levelname)s - %(message)s"
 DATE_FORMAT = "%m/%d/%Y %H:%M:%S %p"
 filename = os.path.join(os.path.abspath(os.path.dirname(os.getcwd())), '/log/mysql.log')
 logging.basicConfig(filename='mysql.log', level=logging.DEBUG, format=LOG_FORMAT, datefmt=DATE_FORMAT)
+logger = logging.getLogger()
 
 
 def get_connection():
@@ -39,7 +40,7 @@ def query_execute(operation):
         cnx.close()
         return d
     except Exception as e:
-        logging.error(e)
+        logger.error(e)
 
 
 def insert_execute(operation):
@@ -53,7 +54,7 @@ def insert_execute(operation):
         print 'ok'
     except Exception as e:
         print e
-        logging.error(e)
+        logger.error(e)
 
 
 def get_all_musicinfo():
