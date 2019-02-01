@@ -117,14 +117,13 @@ def parse_res(res):
     music_info_list = []
     if len(res) > 0:
         for info in res:
-            print info[4].decode("utf-8")
             musicinfo = {
                 "songId": info[0],
                 "seconds": info[2],
-                "songName": info[3].decode("utf-8"),
-                "singerName": info[4].decode("utf-8"),
-                "album": info[5].decode("utf-8"),
-                "downUrl": info[9].decode("utf-8")
+                "songName": info[3],#.decode("utf-8")
+                "singerName": info[4],
+                "album": info[5],
+                "downUrl": info[9]
             }
             music_info_list.append(musicinfo)
     return music_info_list

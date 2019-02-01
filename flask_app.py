@@ -14,6 +14,8 @@ DATE_FORMAT = "%m/%d/%Y %H:%M:%S %p"
 logfile = os.path.join(os.path.abspath(os.path.dirname(os.getcwd())), '/log/flask-{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d")))
 logging.basicConfig(filename=logfile, level=logging.DEBUG, format=LOG_FORMAT, datefmt=DATE_FORMAT)
 logger = logging.getLogger()
+
+
 app = Flask(__name__)
 
 
