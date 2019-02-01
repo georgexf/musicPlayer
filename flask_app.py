@@ -8,6 +8,7 @@ import logging
 import datetime
 import sys
 reload(sys)
+reload(logging)
 sys.setdefaultencoding('utf-8')
 
 app = Flask(__name__)
@@ -60,4 +61,5 @@ def download_music(filename):
 
 
 if __name__ == '__main__':
+
     app.run(host='0.0.0.0')

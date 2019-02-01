@@ -1,9 +1,4 @@
-#coding=utf-8
-import eyed3
 import os
-import dbconnect
-import logging
-import datetime
 import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
