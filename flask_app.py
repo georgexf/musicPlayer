@@ -50,14 +50,14 @@ def download_music(filename):
     directory = os.path.join(os.path.abspath(os.path.dirname(os.getcwd())), 'static/mp3/')
     logging.info("download {0} from {1}".format(filename, directory))
     response = make_response(send_from_directory(directory, filename, as_attachment=True))
-    response.headers["Content-Disposition"] = "attachment; filename={}".format(filename.encode().decode('latin-1'))
+    response.headers["Content-Disposition"] = "attachment; filename={}".format(filename.encode().decode('utf-8'))
     return response
 
 
 #@app.route("/download/<filepath>", methods=['GET'])
 #def download_file(filepath):
-#    return app.send_static_file(filepath)
+#return app.send_static_file(filepath)
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0')
