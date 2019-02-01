@@ -1,6 +1,7 @@
 # -*-coding:utf-8 -*-
-from flask import Flask, jsonify,abort
+from flask import Flask, jsonify, request
 from flask import send_file, send_from_directory
+from werkzeug.utils import secure_filename
 import os
 from flask import make_response
 import musicinfo
@@ -15,8 +16,14 @@ logfile = os.path.join(os.path.abspath(os.path.dirname(os.getcwd())), '/log/flas
 logging.basicConfig(filename=logfile, level=logging.DEBUG, format=LOG_FORMAT, datefmt=DATE_FORMAT)
 logger = logging.getLogger()
 
-
+UPLOAD_PATH = os.path.join(os.path.abspath(os.path.dirname(os.getcwd())), 'static/mp3/')
 app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = UPLOAD_PATH
+app.config['ALLOWED_EXTENSIONS'] = set(['mp3'])
+
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
 
 
 @app.route('/')
@@ -24,34 +31,63 @@ def hello_world():
     return 'Hello Music!'
 
 
-@app.route('/api/music/info/<pageid>')
+@app.route('/api/music/info/<pageid>', method=['GET'])
 def get_music_info(pageid):
     return jsonify(musicinfo.get_music_info_by_pageid(pagesize=20, pageid=pageid))
 
 
-@app.route('/api/music/info/singer/<singer>')
+@app.route('/api/music/info/singer/<singer>', method=['GET'])
 def get_music_info_by_singer(singer):
     logger.info("get singer {0} music".format(singer))
-    if len(musicinfo.get_music_info_by_singer(singer=singer)) == 0:
-        abort(404)
     return jsonify(musicinfo.get_music_info_by_singer(singer=singer))
 
 
-@app.route('/api/music/info/songname/<songname>')
+@app.route('/api/music/info/songname/<songname>', method=['GET'])
 def get_music_info_by_songname(songname):
     logger.info("get sing {0} music".format(songname))
-    if len(musicinfo.get_music_info_by_songName(songname=songname)) == 0:
-        abort(404)
     return jsonify(musicinfo.get_music_info_by_songName(songname=songname))
 
 
 @app.route("/api/music/download/<filename>", methods=['GET'])
 def download_music(filename):
     directory = os.path.join(os.path.abspath(os.path.dirname(os.getcwd())), 'static/mp3/')
-    logger.info("download {0} from {1}".format(filename, directory))
-    response = make_response(send_from_directory(directory, filename, as_attachment=True))
-    response.headers["Content-Disposition"] = "attachment; filename={}".format(filename.encode().decode('utf-8'))
-    return response
+    if os.path.exists(os.path.join(directory,filename)):
+        logger.info("download {0} from {1}".format(filename, directory))
+        response = make_response(send_from_directory(directory, filename, as_attachment=True))
+        response.headers["Content-Disposition"] = "attachment; filename={}".format(filename.encode().decode('utf-8'))
+        return response
+    else:
+        return {
+            "msgStr": "Can not find mp3 file {0}".format(filename),
+            "msgCode": 200
+        }
+
+
+@app.route('/api/music/upload', methods=['GET', 'POST'])
+def upload_file():
+    if request.method == 'POST':
+        upload_file = request.files['music']
+        if upload_file and allowed_file(upload_file.filename):
+            filename = secure_filename(upload_file.filename)
+            if filename in os.path.listdir(UPLOAD_PATH):
+                return {
+                    "msgStr": "file already existed",
+                    "msgCode": 200
+                }
+            else:
+                upload_file.save(UPLOAD_PATH, filename)
+                return {
+                    "msgStr": "upload success",
+                    "msgCode": 200
+                }
+
+        else:
+            return {
+                "msgStr": "not a mp3 file",
+                "msgCode": 500
+            }
+
+
 
 
 #@app.route("/download/<filepath>", methods=['GET'])

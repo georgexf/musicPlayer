@@ -52,7 +52,6 @@ def insert_execute(operation):
         cnx.commit()
         cursor.close()
         cnx.close()
-        print 'ok'
     except Exception as e:
         print e
         logger.error(e)
@@ -61,7 +60,6 @@ def insert_execute(operation):
 def get_all_musicinfo():
     opetation = "select * from test"
     res = query_execute(operation=opetation)
-    print res
     return res
 
 

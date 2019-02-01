@@ -54,7 +54,6 @@ def insert_info_into_db(tableName, musicinfo_list):
         values = '({0})'.format(values.strip(','))
         values_list.append(values)
     operation = "replace into {0}({1}) values{2}".format(tableName, keys, ",".join(values_list)).decode("unicode_escape")
-    print operation
     dbconnect.insert_execute(operation)
 
 
@@ -64,7 +63,6 @@ def get_music_info_by_pageid(pagesize, pageid):
     operation = 'select * from musicinfo limit {0},{1}'.format(start_position, end_position)
     res = dbconnect.query_execute(operation)
     music_info_list = parse_res(res)
-    print music_info_list
     if len(music_info_list) == 0:
         return {
             "msgStr": music_info_list,
@@ -82,7 +80,6 @@ def get_music_info_by_singer(singer):
     logging.info(operation)
     res = dbconnect.query_execute(operation)
     music_info_list = parse_res(res)
-    print music_info_list
     if len(music_info_list) == 0:
         return {
             "msgStr": music_info_list,
@@ -100,7 +97,6 @@ def get_music_info_by_songName(songname):
     logging.info(operation)
     res = dbconnect.query_execute(operation)
     music_info_list = parse_res(res)
-    print music_info_list
     if len(music_info_list) == 0:
         return {
             "msgStr": music_info_list,
