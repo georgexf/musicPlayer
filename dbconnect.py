@@ -17,7 +17,7 @@ password = "george@123"
 LOG_FORMAT = "%(asctime)s - %(levelname)s - %(message)s"
 DATE_FORMAT = "%m/%d/%Y %H:%M:%S %p"
 filename = os.path.join(os.path.abspath(os.path.dirname(os.getcwd())), 'log/mysql-{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d")))
-logging.basicConfig(filename='mysql.log', level=logging.DEBUG, format=LOG_FORMAT, datefmt=DATE_FORMAT)
+logging.basicConfig(filename=filename, level=logging.DEBUG, format=LOG_FORMAT, datefmt=DATE_FORMAT)
 logger = logging.getLogger()
 
 
