@@ -93,10 +93,10 @@ def parse_res(res):
             musicinfo = {
                 "songId": info[0],
                 "seconds": info[2],
-                "songName": info[3].decode("unicode_escape"),
-                "singerName": info[4].decode("unicode_escape"),
-                "album": info[5].decode("unicode_escape"),
-                "downUrl": info[10].decode("unicode_escape")
+                "songName": info[3].decode("unicode_escape").encode("utf-8"),
+                "singerName": info[4].decode("unicode_escape").encode("utf-8"),
+                "album": info[5].decode("unicode_escape").encode("utf-8"),
+                "downUrl": info[9].decode("unicode_escape").encode("utf-8")
             }
             music_info_list.append(musicinfo)
     return music_info_list

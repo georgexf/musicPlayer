@@ -45,9 +45,9 @@ def get_music_info_by_songname(songname):
     return jsonify(musicinfo.get_music_info_by_songName(songname=songname))
 
 
-@app.route("/api/music/download/<fileName>", methods=['GET'])
+@app.route("/api/music/download/<filename>", methods=['GET'])
 def download_music(filename):
-    directory = os.path.join(os.path.abspath(os.path.dirname(os.getcwd()), 'static/mp3/'))
+    directory = os.path.join(os.path.abspath(os.path.dirname(os.getcwd())), 'static/mp3/')
     logging.info("download {0} from {1}".format(filename, directory))
     response = make_response(send_from_directory(directory, filename, as_attachment=True))
     response.headers["Content-Disposition"] = "attachment; filename={}".format(filename.encode().decode('latin-1'))
