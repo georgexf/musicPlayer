@@ -23,9 +23,8 @@ def sync_music_in_db():
         musicPath = os.path.join(musicDir, song)
         audiofile = eyed3.load(musicPath)
         seconds = int(audiofile.info.time_secs)  # 时长
-        #size = audiofile.info.size_bytes
-        songName = audiofile.tag.title   # 歌名
-        singerName = audiofile.tag.artist  # 歌手
+        songName =  song.split("-")[1].split(".")[0] #audiofile.tag.title   # 歌名
+        singerName = song.split("-")[0]  #audiofile.tag.artist  # 歌手
         album = audiofile.tag.album   # 专辑
         downloadUrl = "http://{0}/download/{1}".format(host, song)   # 下载地址
         musicinfo = {
@@ -55,6 +54,21 @@ def insert_info_into_db(tableName, musicinfo_list):
         values_list.append(values)
     operation = "replace into {0}({1}) values{2}".format(tableName, keys, ",".join(values_list)).decode("unicode_escape")
     dbconnect.insert_execute(operation)
+
+def get_music_list():
+    operation = 'select * from musicinfo'
+    res = dbconnect.query_execute(operation)
+    music_list = parse_res(res)
+    if len(music_list) == 0:
+        return {
+            "msgStr": music_list,
+            "msgCode": 404
+        }
+    else:
+        return {
+            "msgStr": music_list,
+            "msgCode": 200
+        }
 
 
 def get_music_info_by_pageid(pagesize, pageid):
@@ -116,7 +130,7 @@ def parse_res(res):
             musicinfo = {
                 "songId": info[0],
                 "seconds": info[2],
-                "songName": info[3],#.decode("utf-8")
+                "songName": info[3],
                 "singerName": info[4],
                 "album": info[5],
                 "downUrl": info[9]

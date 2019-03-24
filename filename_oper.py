@@ -1,3 +1,5 @@
+# -*-coding:utf-8 -*-
+#替换掉文件名的空格
 import os
 import sys
 reload(sys)

@@ -31,18 +31,23 @@ def hello_world():
     return 'Hello Music!'
 
 
-@app.route('/api/music/info/<pageid>', method=['GET'])
+@app.route('/api/music/info/', methods=['GET'])
+def get_music_list():
+    return jsonify(musicinfo.get_music_list())
+
+
+@app.route('/api/music/info/<pageid>', methods=['GET'])
 def get_music_info(pageid):
     return jsonify(musicinfo.get_music_info_by_pageid(pagesize=20, pageid=pageid))
 
 
-@app.route('/api/music/info/singer/<singer>', method=['GET'])
+@app.route('/api/music/info/singer/<singer>', methods=['GET'])
 def get_music_info_by_singer(singer):
     logger.info("get singer {0} music".format(singer))
     return jsonify(musicinfo.get_music_info_by_singer(singer=singer))
 
 
-@app.route('/api/music/info/songname/<songname>', method=['GET'])
+@app.route('/api/music/info/songname/<songname>', methods=['GET'])
 def get_music_info_by_songname(songname):
     logger.info("get sing {0} music".format(songname))
     return jsonify(musicinfo.get_music_info_by_songName(songname=songname))
@@ -57,10 +62,10 @@ def download_music(filename):
         response.headers["Content-Disposition"] = "attachment; filename={}".format(filename.encode().decode('utf-8'))
         return response
     else:
-        return {
+        return jsonify({
             "msgStr": "Can not find mp3 file {0}".format(filename),
             "msgCode": 200
-        }
+        })
 
 
 @app.route('/api/music/upload', methods=['GET', 'POST'])
@@ -69,30 +74,39 @@ def upload_file():
         upload_file = request.files['music']
         if upload_file and allowed_file(upload_file.filename):
             filename = secure_filename(upload_file.filename)
-            if filename in os.path.listdir(UPLOAD_PATH):
-                return {
+            if filename in os.listdir(UPLOAD_PATH):
+                return jsonify({
                     "msgStr": "file already existed",
                     "msgCode": 200
-                }
+                })
             else:
-                upload_file.save(UPLOAD_PATH, filename)
-                return {
+                upload_file.save(os.path.join(UPLOAD_PATH, filename))
+                return jsonify({
                     "msgStr": "upload success",
                     "msgCode": 200
-                }
+                })
 
         else:
-            return {
+            return jsonify({
                 "msgStr": "not a mp3 file",
                 "msgCode": 500
-            }
+            })
 
 
+@app.route("/package/download/<filename>", methods=['GET'])
+def download_package(filename):
+    directory = os.path.join(os.path.abspath(os.path.dirname(os.getcwd())), 'static/package/')
+    if os.path.exists(os.path.join(directory,filename)):
+        logger.info("download {0} from {1}".format(filename, directory))
+        response = make_response(send_from_directory(directory, filename, as_attachment=True))
+        response.headers["Content-Disposition"] = "attachment; filename={}".format(filename.encode().decode('utf-8'))
+        return response
+    else:
+        return jsonify({
+            "msgStr": "Can not find mp3 file {0}".format(filename),
+            "msgCode": 200
+        })
 
-
-#@app.route("/download/<filepath>", methods=['GET'])
-#def download_file(filepath):
-#return app.send_static_file(filepath)
 
 
 if __name__ == '__main__':

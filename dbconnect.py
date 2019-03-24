@@ -30,11 +30,11 @@ def get_connection():
     return cnx
 
 
-def query_execute(operation):
+def query_execute(sql):
     try:
         cnx = get_connection()
         cursor = cnx.cursor()
-        cursor.execute(operation)
+        cursor.execute(sql)
         d = cursor.fetchall()
         cnx.commit()
         cursor.close()
@@ -44,11 +44,11 @@ def query_execute(operation):
         logger.error(e)
 
 
-def insert_execute(operation):
+def insert_execute(sql):
     try:
         cnx = get_connection()
         cursor = cnx.cursor()
-        cursor.execute(operation)
+        cursor.execute(sql)
         cnx.commit()
         cursor.close()
         cnx.close()
@@ -69,6 +69,6 @@ def close_cur_cnx(cursor, cnx):
 
 
 if __name__ == "__main__":
-    get_all_musicinfo()
+    get_connection()
 
 
