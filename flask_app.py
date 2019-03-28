@@ -17,6 +17,7 @@ logging.basicConfig(filename=logfile, level=logging.DEBUG, format=LOG_FORMAT, da
 logger = logging.getLogger()
 
 UPLOAD_PATH = os.path.join(os.path.abspath(os.path.dirname(os.getcwd())), 'static/mp3/')
+VERSION_PATH = os.path.join(os.path.abspath(os.path.dirname(os.getcwd())), 'static/apk/')
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_PATH
 app.config['ALLOWED_EXTENSIONS'] = set(['mp3'])
@@ -51,6 +52,23 @@ def get_music_info_by_singer(singer):
 def get_music_info_by_songname(songname):
     logger.info("get sing {0} music".format(songname))
     return jsonify(musicinfo.get_music_info_by_songName(songname=songname))
+
+
+@app.route('/api/music/info/version/', methods=['GET'])
+def get_version():
+    logger.info("get version")
+    apk_list = os.listdir(VERSION_PATH)
+    if len(apk_list != 1):
+        return jsonify({
+            "msgStr": "get version error",
+            "msgCode": 500
+        })
+    else:
+        print str(apk_list[0])
+        return jsonify({
+            "msgStr": str(apk_list[0]),
+            "msgCode": 200
+        })
 
 
 @app.route("/api/music/download/<filename>", methods=['GET'])
@@ -104,7 +122,7 @@ def download_package(filename):
     else:
         return jsonify({
             "msgStr": "Can not find mp3 file {0}".format(filename),
-            "msgCode": 200
+            "msgCode": 404
         })
 
 

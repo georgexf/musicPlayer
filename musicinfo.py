@@ -10,6 +10,7 @@ sys.setdefaultencoding('utf-8')
 
 
 host = "39.108.230.41"
+port = "5000"
 LOG_FORMAT = "%(asctime)s - %(levelname)s - %(message)s"
 DATE_FORMAT = "%m/%d/%Y %H:%M:%S %p"
 filename = os.path.join(os.path.abspath(os.path.dirname(os.getcwd())), 'log/mysql-{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d")))
@@ -26,7 +27,7 @@ def sync_music_in_db():
         songName =  song.split("-")[1].split(".")[0] #audiofile.tag.title   # 歌名
         singerName = song.split("-")[0]  #audiofile.tag.artist  # 歌手
         album = audiofile.tag.album   # 专辑
-        downloadUrl = "http://{0}/download/{1}".format(host, song)   # 下载地址
+        downloadUrl = "http://{0}:{1}/download/{2}".format(host, port, song)   # 下载地址
         musicinfo = {
             "singerId": 0,
             "seconds": seconds,
@@ -36,10 +37,10 @@ def sync_music_in_db():
             "downUrl": downloadUrl
         }
         musicinfo_list.append(musicinfo)
-    insert_info_into_db("musicinfo", musicinfo_list)
+        replace_info_into_db("musicinfo", musicinfo_list)
 
 
-def insert_info_into_db(tableName, musicinfo_list):
+def replace_info_into_db(tableName, musicinfo_list):
     values_list = []
     for musicinfo in musicinfo_list:
         keys = ",".join(musicinfo.keys())

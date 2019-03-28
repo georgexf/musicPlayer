@@ -9,3 +9,4 @@ musicdir = os.path.join(os.path.abspath(os.path.dirname(os.getcwd())), 'static/m
 for songname in os.listdir(musicdir):
     print songname
     os.rename(os.path.join(musicdir, songname),os.path.join(musicdir, songname.replace(' ', '')))
+    os.rename(os.path.join(musicdir, songname), os.path.join(musicdir, songname.replace('_', '')))
