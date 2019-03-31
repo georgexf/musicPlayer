@@ -1,7 +1,7 @@
 #coding=utf-8
 import eyed3
 import os
-import dbconnect
+import db
 import logging
 import datetime
 import sys
@@ -54,11 +54,11 @@ def replace_info_into_db(tableName, musicinfo_list):
         values = '({0})'.format(values.strip(','))
         values_list.append(values)
     operation = "replace into {0}({1}) values{2}".format(tableName, keys, ",".join(values_list)).decode("unicode_escape")
-    dbconnect.insert_execute(operation)
+    db.insert_execute(operation)
 
 def get_music_list():
     operation = 'select * from musicinfo'
-    res = dbconnect.query_execute(operation)
+    res = db.query_execute(operation)
     music_list = parse_res(res)
     if len(music_list) == 0:
         return {
@@ -76,7 +76,7 @@ def get_music_info_by_pageid(pagesize, pageid):
     start_position = int(pagesize) * (int(pageid) - 1)
     end_position = int(pagesize) * int(pageid)
     operation = 'select * from musicinfo limit {0},{1}'.format(start_position, end_position)
-    res = dbconnect.query_execute(operation)
+    res = db.query_execute(operation)
     music_info_list = parse_res(res)
     if len(music_info_list) == 0:
         return {
@@ -93,7 +93,7 @@ def get_music_info_by_pageid(pagesize, pageid):
 def get_music_info_by_singer(singer):
     operation = 'select * from musicinfo where singerName= \"{0}\"'.format(singer)
     logging.info(operation)
-    res = dbconnect.query_execute(operation)
+    res = db.query_execute(operation)
     music_info_list = parse_res(res)
     if len(music_info_list) == 0:
         return {
@@ -110,7 +110,7 @@ def get_music_info_by_singer(singer):
 def get_music_info_by_songName(songname):
     operation = 'select * from musicinfo where songName like \"%{0}%\"'.format(songname)
     logging.info(operation)
-    res = dbconnect.query_execute(operation)
+    res = db.query_execute(operation)
     music_info_list = parse_res(res)
     if len(music_info_list) == 0:
         return {

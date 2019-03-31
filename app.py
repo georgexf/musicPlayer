@@ -3,13 +3,16 @@ from flask import Flask, jsonify, request
 from flask import send_file, send_from_directory
 from werkzeug.utils import secure_filename
 import os
+import re
 from flask import make_response
 import musicinfo
 import logging
 import datetime
 import sys
+
 reload(sys)
 sys.setdefaultencoding('utf-8')
+
 LOG_FORMAT = "%(asctime)s - %(levelname)s - %(message)s"
 DATE_FORMAT = "%m/%d/%Y %H:%M:%S %p"
 logfile = os.path.join(os.path.abspath(os.path.dirname(os.getcwd())), '/log/flask-{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d")))
@@ -37,18 +40,18 @@ def get_music_list():
     return jsonify(musicinfo.get_music_list())
 
 
-@app.route('/api/music/info/<pageid>', methods=['GET'])
+@app.route('/api/music/info/<int:pageid>/', methods=['GET'])
 def get_music_info(pageid):
     return jsonify(musicinfo.get_music_info_by_pageid(pagesize=20, pageid=pageid))
 
 
-@app.route('/api/music/info/singer/<singer>', methods=['GET'])
+@app.route('/api/music/info/singer/<singer>/', methods=['GET'])
 def get_music_info_by_singer(singer):
     logger.info("get singer {0} music".format(singer))
     return jsonify(musicinfo.get_music_info_by_singer(singer=singer))
 
 
-@app.route('/api/music/info/songname/<songname>', methods=['GET'])
+@app.route('/api/music/info/songname/<songname>/', methods=['GET'])
 def get_music_info_by_songname(songname):
     logger.info("get sing {0} music".format(songname))
     return jsonify(musicinfo.get_music_info_by_songName(songname=songname))
@@ -58,17 +61,23 @@ def get_music_info_by_songname(songname):
 def get_version():
     logger.info("get version")
     apk_list = os.listdir(VERSION_PATH)
-    if len(apk_list != 1):
+    if len(apk_list) != 1:
         return jsonify({
             "msgStr": "get version error",
             "msgCode": 500
         })
     else:
-        print str(apk_list[0])
-        return jsonify({
-            "msgStr": str(apk_list[0]),
-            "msgCode": 200
-        })
+        mat = re.search(r'[0-9]+.[0-9]+.[0-9]+',str(apk_list[0]))
+        if mat:
+            return jsonify({
+                "msgStr": mat.group(),
+                "msgCode": 200
+            })
+        else:
+            return jsonify({
+                "msgStr": "get version error",
+                "msgCode": 500
+            })
 
 
 @app.route("/api/music/download/<filename>", methods=['GET'])
