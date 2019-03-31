@@ -125,10 +125,19 @@ def download_package(filename):
     directory = os.path.join(os.path.abspath(os.path.dirname(os.getcwd())), 'static/package/')
     if os.path.exists(os.path.join(directory,filename)):
         logger.info("download {0} from {1}".format(filename, directory))
-        response = make_response(send_from_directory(directory, filename, as_attachment=True))
-        response.headers["Content-Disposition"] = "attachment; filename={}".format(filename.encode().decode('utf-8'))
-        return response
+        try:
+            response = make_response(send_from_directory(directory, filename, as_attachment=True))
+            response.headers["Content-Disposition"] = "attachment; filename={}".format(filename.encode().decode('utf-8'))
+            return response
+        except Exception, e:
+            logger.error("下载传输错误\n",e.message)
+            return jsonify({
+                "msgStr": "Error occure while download",
+                "msgCode": 500
+            })
+
     else:
+        logger.error("Can not find mp3 file {0}".format(filename))
         return jsonify({
             "msgStr": "Can not find mp3 file {0}".format(filename),
             "msgCode": 404
